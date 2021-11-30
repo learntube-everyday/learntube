@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Stu_videoCheck">
+	<insert id="insertTime">
+		insert into lms_videoCheck (videoID, classID, playlistID, classContentID, studentID ,lastTime, timer, watched)
+		values
+		(#{videoID},  #{classID}, #{playlistID}, #{classContentID}, #{studentID}, #{lastTime}, #{timer}, #{watched})
+	</insert>
+	
+	<update id="updateTime">
+		update lms_videoCheck
+		set lastTime=#{lastTime}, timer=#{timer}
+		where studentID=#{studentID} AND videoID=#{videoID}
+	</update>
+	
+	<update id="updateWatch">
+		update lms_videoCheck
+		set lastTime=#{lastTime}, timer=#{timer}, watched=#{watched}
+		where studentID=#{studentID} AND videoID=#{videoID}
+	</update>
+	
+	<delete id="deleteTime">
+		delete from lms_videoCheck where classID=#{classID} and studentID=#{studentID}
+	</delete>
+	
+	<select id="getTime" resultType="videoCheckVO">
+		select * 
+		from lms_videoCheck 
+		where id=#{id}
+	</select>
+	
+	<select id="getTime2" resultType="videoCheckVO">
+		select *
+		from lms_videoCheck
+		where studentID=#{studentID} AND videoID=#{videoID}
+	</select>
+	
+	<select id="getWatchedCheck" resultType="videoCheckVO">
+		select *
+		from lms_videoCheck
+		where studentID=#{studentID} AND playlistID=#{playlistID} AND classContentID = #{classContentID}
+	</select>
+	
+	<select id="getTimeList" resultType="videoCheckVO">
+		SELECT * 
+		FROM lms_videoCheck order
+		by id desc
+	</select>
+	
+</mapper>

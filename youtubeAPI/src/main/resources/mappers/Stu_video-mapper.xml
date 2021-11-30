@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Stu_Video">
+	
+	<select id="getVideoList" resultType="video">
+		select * from lms_video left join lms_classContent on lms_video.playlistID = lms_classContent.playlistID
+		where lms_video.playlistID=#{playlistID} 
+		order by lms_classContent.days, lms_classContent.daySeq, lms_video.seq ASC
+	</select>
+	
+	<select id="getVideoCheckList" resultType="video">
+		select * from lms_video left join lms_videoCheck on lms_video.id = lms_videoCheck.videoID
+		where lms_video.playlistID=#{playlistID} and lms_videoCheck.studentID = #{studentID} and lms_videoCheck.classContentID = #{classContentID}
+		order by seq ASC
+	</select>
+
+</mapper>

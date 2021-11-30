@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Stu_Classes">
+	<select id="getClass" resultType="classes">
+		select * from lms_class where id=#{id}
+	</select>
+	
+	<select id="getClassInfo" resultType="classes">
+		select className, description, I.name, C.regDate
+		from lms_class C join lms_instructor I on C.instructorID = I.id 
+		where C.id=#{id}
+	</select>
+	
+	<select id="getAllClass" resultType="classes">	<!-- 나중에 아래 두개 지우기!! -->
+		select *
+		from lms_class C join lms_takes T on C.id = T.classID
+		where studentID=#{studentID} and active=#{active} and status="accepted"
+		order by C.${order}
+	</select>
+	
+	<select id="getAllMyClass" resultType="classes">
+		select *
+		from lms_class C join lms_takes T on C.id = T.classID
+		where studentID=#{studentID} and active=1 and status="accepted"
+	</select>
+	
+	<select id="getAllMyInactiveClass" resultType="classes">
+		select *
+		from lms_class C join lms_takes T on C.id = T.classID
+		where studentID=#{studentID} and active=0 and status="accepted"
+	</select>
+	
+	<select id="getMyName" resultType="String">
+		select name from lms_student where id=#{id}
+	</select>
+	
+	<delete id="deleteClassroom">
+		delete from lms_takes 
+		where studentID=#{studentID} and classID=#{id}
+	</delete>
+	
+	<select id="checkTakeClass" resultType="int">
+		select count(*) 
+		from lms_takes
+		where classID=#{id} and studentID=#{studentID}
+	</select>
+	
+</mapper>

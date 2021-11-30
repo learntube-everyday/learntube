@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AttendanceInternalCheck">
+	
+	<insert id="insertAttendanceInCheck">
+		insert into lms_attendanceInternalCheck(internal, classContentID, classID, days, studentID)
+		values
+		(#{internal}, #{classContentID}, #{classID}, #{days}, #{studentID})
+	</insert>
+	
+	<update id="updateAttendanceInCheck">
+		update lms_attendanceInternalCheck
+		set internal=#{internal}
+		where classID=#{classID} and studentID=#{studentID} and days = #{days}
+	</update>
+	
+	<delete id="deleteAttendanceInCheck">
+		delete from lms_attendanceInternalCheck where classContentID=#{classContentID}
+	</delete>
+	
+	<select id="getAttendanceInCheck" resultType="attendanceInternal">
+		select * from lms_attendanceInternalCheck join lms_classContent on lms_attendanceInternalCheck.classContentID = lms_classContent.id
+		where lms_attendanceInternalCheck.classID=#{classID} and lms_attendanceInternalCheck.days=#{days} and studentID=#{studentID} and lms_classContent.published=1 and internal="출석"
+	</select>
+	
+	<select id="getAttendanceInCheckNum" resultType="int">
+		select count(*) from lms_attendanceInternalCheck join lms_classContent on lms_attendanceInternalCheck.classContentID = lms_classContent.id
+		where lms_attendanceInternalCheck.classID=#{classID} and lms_attendanceInternalCheck.days=#{days} and studentID=#{studentID} and lms_classContent.published=1 and internal="출석"
+	</select>
+	
+	<select id="getAttendanceInCheckExisted" resultType="attendanceInternal">
+		select * from lms_attendanceInternalCheck join lms_classContent on lms_attendanceInternalCheck.classContentID = lms_classContent.id
+		where lms_attendanceInternalCheck.classID=#{classID} and lms_attendanceInternalCheck.days=#{days} and studentID=#{studentID} and lms_classContent.published=1
+	</select>
+	
+	<select id="getAttendanceInCheckExistedNum" resultType="int">
+		select count(*) from lms_attendanceInternalCheck join lms_classContent on lms_attendanceInternalCheck.classContentID = lms_classContent.id
+		where lms_attendanceInternalCheck.classID=#{classID} and lms_attendanceInternalCheck.days=#{days} and studentID=#{studentID} and lms_classContent.published=1
+	</select>
+	
+	<select id="getAttendanceInCheckByID" resultType="attendanceInternal">
+		select * from lms_attendanceInternalCheck join lms_classContent on lms_attendanceInternalCheck.classContentID = lms_classContent.id
+		where classContentID=#{classContentID} and studentID=#{studentID} and lms_classContent.published=1 and internal="출석"
+	</select>
+	
+	<select id="getAttendanceInCheckByIDNum" resultType="int">
+		select count(*) from lms_attendanceInternalCheck join lms_classContent on lms_attendanceInternalCheck.classContentID = lms_classContent.id
+		where classContentID=#{classContentID} and studentID=#{studentID} and lms_classContent.published=1 and internal="출석"
+	</select>
+	
+	<select id="getAttendanceInCheckByIDExisted" resultType="attendanceInternal">
+		select * from lms_attendanceInternalCheck join lms_classContent on lms_attendanceInternalCheck.classContentID = lms_classContent.id
+		where classContentID=#{classContentID} and studentID=#{studentID} and lms_classContent.published=1 
+	</select>
+	
+	<select id="getAttendanceInCheckByIDExistedNum" resultType="int">
+		select count(*) from lms_attendanceInternalCheck join lms_classContent on lms_attendanceInternalCheck.classContentID = lms_classContent.id
+		where classContentID=#{classContentID} and studentID=#{studentID} and lms_classContent.published=1 
+	</select>
+	
+	<delete id="deleteInternalAttendanceCheck">
+		delete from lms_attendanceInternalCheck
+		WHERE classID = #{classID} and studentID=#{studentID}
+	</delete>
+	
+</mapper>
