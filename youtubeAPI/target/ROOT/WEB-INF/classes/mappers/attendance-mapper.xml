@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Attendance">
+
+	<insert id="insertAttendanceNoFile" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into lms_attendance(classID, days)
+		values
+		(#{classID}, #{days})
+	</insert>
+
+	<insert id="insertAttendance">
+		insert into lms_attendance(classID, days, fileName)
+		values
+		(#{classID}, #{days}, #{fileName})
+	</insert>
+	
+	<update id="updateAttendance">
+		update lms_attendance
+		set classID=#{classID}, days=#{days}, fileName=#{fileName}
+		where classID=#{classID} and days=#{days}
+	</update>
+	
+	<delete id="deleteAttendance">
+		delete from lms_attendance 
+		where classID=#{classID} and days=#{days}
+	</delete>
+	
+	<select id="getAttendance" resultType="attendance">
+		select * from lms_attendance
+		where id=#{id}
+	</select>
+	
+	<select id="getAttendanceID" resultType="attendance">
+		select id from lms_attendance
+		where classID=#{classID} and days=#{days}
+	</select>
+	
+	<select id="getAttendanceID2" resultType="attendance">
+		select id from lms_attendance
+		where classID=#{classID}
+	</select>
+	
+	<select id="getAttendanceList" resultType="attendance">
+		select distinct id from lms_attendance
+		where classID=#{classID}
+	</select>
+	
+	<select id="getAttendanceListCount" resultType="int">
+		select count(*) from lms_attendance
+		where classID=#{classID}
+	</select>
+	
+	<select id="getAttendanceFileName" resultType="attendance">
+		select fileName from lms_attendance
+		where classID=#{classID}
+	</select>
+</mapper>

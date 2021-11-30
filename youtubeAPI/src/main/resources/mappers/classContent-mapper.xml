@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ClassContent">
+	<insert id="insertContent">
+		insert into lms_classContent (title, description, classID, playlistID, days, published, startDate, endDate)
+		values (#{title}, #{description}, #{classID}, #{playlistID}, #{days}, #{published}, #{startDate}, #{endDate})
+	</insert>
+	
+	<insert id="insertURLContent">	<!-- playlist없는 강의컨텐츠 -->
+		insert into lms_classContent (title, description, classID, days, published, startDate, endDate)
+		values (#{title}, #{description}, #{classID}, #{days}, #{published}, #{startDate}, #{endDate})
+	</insert>
+	
+	<select id="getClassContentID" resultType="classContent">
+		select id from lms_classContent
+		where classID=#{classID} and days=#{days}
+	</select>
+	
+	<update id="updateContent">
+		update lms_classContent
+		set title=#{title}, description=#{description}, endDate=#{endDate}, startDate=#{startDate}, published=#{published}
+		where id=#{id}
+	</update>
+	
+	<update id="updatePublished">
+		update lms_classContent
+		set published=#{published}
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteContent">
+		delete from lms_classContent where id=#{id}
+	</delete>
+	
+	<delete id="deleteContentList">
+		delete from lms_classContent where classID=#{classID} and days=#{days}
+	</delete>
+	
+	
+	<select id="getDaySeq" resultType="classContent">
+		select * from lms_classContent
+		where classID=#{classID} and days=#{days}
+	</select>
+	
+	<select id="getDaySeqNum" resultType="int">
+		select count(*) from lms_classContent
+		where classID=#{classID} and days=#{days}
+	</select>
+	
+	<select id="getEndDate" resultType="classContent">
+		select endDate from lms_classContent
+		where classID=#{classID} and days=#{days} AND published=1
+	</select>
+	
+	<select id="getClassNum" resultType="int">	<!-- 해당 강의실에 생성된 강의컨텐츠 갯수 가져오기! -->
+		select count(*)
+		from lms_classContent
+		where classID=#{classID}
+	</select>
+	
+	<select id="getClassDaysNum" resultType="int">	<!-- 해당 강의실에 생성된 강의컨텐츠 갯수 가져오기! -->
+		select count(distinct days)
+		from lms_classContent
+		where classID=#{classID}
+	</select>
+	
+	<select id="getBiggestUsedDay" resultType="int">	<!-- 각 차시별 강의 컨텐츠가 하나라도 생성된것 중 가장 큰 차시 정보 가져오기 -->
+		select days
+		from lms_classContent
+		where classID=#{classID} 
+		order by days desc limit 1
+	</select>
+	
+	<select id="getOneContentInstructor" resultType="classContent">
+		select * from lms_classContent
+		where id=#{id}
+	</select>
+	
+	<select id="getOneContent" resultType="classContent">
+		select * from lms_classContent join lms_playlist on lms_classContent.playlistID = lms_playlist.id
+		inner join lms_class on lms_class.id = lms_classContent.classID
+		where lms_classContent.id=#{id}
+	</select>
+	
+	<select id="getAllClassContent" resultType="classContent">
+		select * from lms_classContent left join lms_playlist on lms_classContent.playlistID = lms_playlist.id
+		where classID=#{classID} order by days, lms_classContent.regDate
+	</select>
+	
+	<select id="getFileClassContent" resultType="classContent">
+		select * from lms_classContent
+		where classID=#{classID} and playlistID is null
+	</select>
+	
+	<select id="getRealAll" resultType="classContent">
+		select id, classID, days, daySeq, title, description, playlistID, published, startDate, endDate
+		from lms_classContent
+		where classID=#{classID} order by days,regDate
+	</select>
+	
+	<select id="getAllClassContentForCopy" resultType="classContent">
+		select days, daySeq, title, description, playlistID, startDate, endDate
+		from lms_classContent
+		where classID=#{classID}
+	</select>
+	
+	<insert id="insertCopiedClassContents" parameterType="java.util.List">
+		insert into lms_classContent (classID, days, daySeq, title, description, playlistID, published)
+		values 
+			<foreach collection="list" item="item" separator=",">
+				("${item.classID}","${item.days}","${item.daySeq}","${item.title}","${item.description}"
+				 <if test="item.playlistID == 0" >
+		          , NULL
+		         </if>
+		         <if test="item.playlistID != 0" >
+		         , "${item.playlistID}"
+		         </if>
+		         , NULL)
+			</foreach>	
+	</insert>
+
+</mapper>

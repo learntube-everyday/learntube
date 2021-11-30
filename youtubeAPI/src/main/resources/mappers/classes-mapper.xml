@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Classes">
+	<insert id="insertClassroom" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into lms_class (instructorID, active, className, description, days, tag, closeDate, entryCode)
+		values (#{instructorID}, 1, #{className}, #{description}, #{days}, #{tag}, #{closeDate}, #{entryCode})
+	</insert>
+	<update id="updateClassroom">
+		update lms_class 
+		set className=#{className}, description=#{description}, days=#{days}, tag=#{tag}, active=#{active}, closeDate=#{closeDate}
+		where id=#{id}
+	</update>
+	
+	<update id="updateDays">
+		update lms_class set days=days+1
+		where id=#{id}
+	</update>
+	
+	<update id="deleteDay">
+		update lms_class set days=days-1
+		where id=#{id}
+	</update>
+	
+	<update id="updateInstructorNull">
+		update lms_class 
+		set instructorID=NULL, closeDate=#{closeDate}
+		where id=#{id}
+	</update>
+	
+	<update id="updateActive">
+		update lms_class set active=0
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteClassroom">
+		delete from lms_class where id=#{id}
+	</delete>
+	
+	<select id="getClassName" resultType="String">
+		select className from lms_class where id=#{id}
+	</select>
+	
+	<select id="getClass" resultType="classes">
+		select * from lms_class where id=#{id}
+	</select>
+	
+	<select id="getClassInfoForCopy" resultType="classes">
+		select instructorID, className, description, days, tag 
+		from lms_class where id=#{id}
+	</select>
+	
+	<select id="getClassByEntryCode" resultType="classes">
+		select * from lms_class where entryCode=#{entryCode}
+	</select>
+	
+	<select id="getAllClass" resultType="classes">
+		select * from lms_class 
+		where instructorID=#{instructorID} and active=#{active} 
+		order by ${order}
+	</select>
+	
+	<select id="getAllMyActiveClass" resultType="classes">
+		select * from lms_class where instructorID=#{instructorID} and active=1
+	</select>
+	
+	<select id="getAllMyInactiveClass" resultType="classes">
+		select * from lms_class where instructorID=#{instructorID} and active=0
+	</select>
+	
+	<select id="getAllMyClass" resultType="classes">
+		select * from lms_class where instructorID=#{instructorID}
+	</select>
+	
+	<select id="getAllClassForAdmin" resultType="classes">
+		select c.id, c.instructorID, c.active, c.className, c.totalStudent, c.days, c.regDate, i.name, i.email
+		from lms_class c
+		left join lms_instructor i on c.instructorID=i.id
+	</select>
+	
+	<select id="getAllEntryCodes" resultType="classes">
+		select * from lms_class where entryCode=#{entryCode}
+	</select>
+	
+	<update id="updateTotalStudent">
+		update lms_class 
+		set totalStudent = ( select count(id)
+					from lms_takes
+					where classID = #{classID} and status="accepted")
+		where id = #{classID}
+	</update>
+	
+	<select id="checkAccessClass" resultType="int">
+		select count(*) 
+		from lms_class
+		where id=#{id} and instructorID=#{instructorID}
+	</select>
+	
+	<select id="getClassesToBeClosed" resultType="classes">
+		select *
+		from lms_class
+		where active=1 and <![CDATA[ endDate <= #{endDate} ]]>
+	</select>
+	
+</mapper>

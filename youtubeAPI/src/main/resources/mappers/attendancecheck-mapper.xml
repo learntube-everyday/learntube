@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AttendanceCheck">
+	
+	<insert id="insertExAttendanceCheck">
+		insert into lms_attendanceCheck(attendanceID, external, studentID)
+		values
+		(#{attendanceID}, #{external}, #{studentID})
+	</insert>
+	
+	<insert id="insertAttendanceCheck">
+		insert into lms_attendanceCheck(attendanceID, external, internal, studentID)
+		values
+		(#{attendanceID}, #{external}, #{internal}, #{studentID})
+	</insert>
+	
+	<update id="updateExAttendanceCheck">
+		update lms_attendanceCheck
+		set attendanceID=#{attendanceID}, external=#{external}, studentID=#{studentID}
+		where attendanceID=#{attendanceID} and studentID=#{studentID}
+	</update>
+	
+	<update id="updateInAttendanceCheck">
+		update lms_attendanceCheck
+		set attendanceID=#{attendanceID}, internal=#{internal}, studentID=#{studentID}
+		where id=#{id}
+	</update>
+	
+	<update id="updateAttendanceCheck">
+		update lms_attendanceCheck
+		set attendanceID=#{attendanceID}, external=#{external}, internal=#{internal}, studentID=#{studentID}
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteAttendanceCheck">
+		delete A from lms_attendanceCheck A 
+		LEFT JOIN lms_attendance B ON B.id = A.attendanceID 
+		WHERE B.classID = #{classID} and studentID=#{studentID}
+	</delete>
+	
+	<select id="getAttendanceCheck" resultType="AttendanceCheckVO">
+		select * from lms_attendanceCheck
+		where attendanceID=#{attendanceID} and studentID=#{studentID}
+	</select>
+	
+	<select id="getAttendanceCheckList" resultType="AttendanceCheckVO">
+		<!--  select * from lms_attendanceCheck
+		where attendanceID=#{attendanceID}-->
+		select * from lms_attendanceCheck join lms_student on lms_attendanceCheck.studentID = lms_student.id 
+		where attendanceID=#{attendanceID} order by lms_student.name
+	</select>
+	
+	<select id="getAttendanceCheckListCount" resultType="int">
+		select count(distinct attendanceID) 
+		from lms_attendanceCheck join lms_attendance on lms_attendanceCheck.attendanceID = lms_attendance.id
+		where lms_attendance.classID = #{classID}
+	</select>
+
+</mapper>

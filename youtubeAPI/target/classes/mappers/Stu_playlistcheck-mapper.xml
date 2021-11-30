@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Stu_PlaylistCheck">
+	<insert id="insertPlaylist">
+		insert into lms_playlistCheck(studentID, playlistID, classContentID, classID, days, totalVideo, totalWatched, updateWatched)
+		values
+		(#{studentID}, #{playlistID}, #{classContentID}, #{classID}, #{days}, #{totalVideo}, #{totalWatched}, #{updateWatched})
+	</insert>
+	
+	<insert id="insertNoPlaylistID">
+		insert into lms_playlistCheck(studentID, classContentID, classID, days, totalVideo, totalWatched)
+		values
+		(#{studentID}, #{classContentID}, #{classID}, #{days}, #{totalVideo}, #{totalWatched})
+	</insert>
+	
+	<update id="updatePlaylist">
+		update lms_playlistCheck
+		set totalWatched=#{totalWatched} , updateWatched=#{updateWatched}
+		where id=${id}
+	</update>
+	
+	<update id="updateTotalWatched">
+		update lms_playlistCheck
+		set totalWatched = totalWatched + (select duration
+		from lms_video join lms_videoCheck on lms_video.id = lms_videoCheck.videoID
+		where studentID=#{studentID} AND lms_playlistCheck.playlistID=#{playlistID} AND lms_videoCheck.videoID=#{videoID} AND lms_videoCheck.watched=1 )
+		where playlistID=#{playlistID} AND classContentID = #{classContentID}
+	</update>
+	
+	<delete id="deletePlaylist">
+		delete from lms_playlistCheck where studentID = #{studentID} and classID=#{classID} 
+	</delete>
+	
+	<select id="getPlaylist" resultType="PlaylistCheckVO">
+		select * 
+		from lms_playlistCheck
+		where id=#{id}
+	</select>
+	
+	<select id="getTotalVideo" resultType="int">
+		select totalVideo from lms_playlist
+		where lms_playlist.playlistID = #{playlistID}
+	</select>
+	
+	<select id="getHowMany" resultType="int">
+		select count(*) from lms_playlistCheck
+		where lms_playlistCheck.playlistID  = #{playlistID} AND lms_playlistCheck.classID = #{classID}
+	</select>
+	
+	<select id="getPlaylistByPlaylistID" resultType="PlaylistCheckVO">
+		select * 
+		from lms_playlistCheck
+		where classContentID = #{classContentID} AND studentID=#{studentID}
+		<!-- where절에 playlistID가 있었는데, playlist를 첨부하지 않은 강의 컨텐츠를 확인할 때 nullPointerException이 발생된다.
+		어짜피 classContentID마다 playlist도 결정되니 playlistID없앴다.  -->
+	</select>
+	
+	<select id="getPlaylistByContentStu" resultType="PlaylistCheckVO">
+		select * 
+		from lms_playlistCheck
+		where classContentID = #{classContentID} AND studentID=#{studentID}
+	</select>
+	
+	<select id="getCompletePlaylist" resultType="PlaylistCheckVO">
+		select * 
+		from lms_playlistCheck
+		where classID=#{classID} AND studentID = #{studentID} 
+	</select>
+	
+	<select id="getCompletePlaylistWithDays" resultType="PlaylistCheckVO">
+		select * 
+		from lms_playlistCheck join lms_classContent on lms_playlistCheck.classContentID = lms_classContent.id
+		where lms_playlistCheck.classID=#{classID} AND lms_playlistCheck.days=#{days} AND studentID = #{studentID} AND lms_classContent.published = 1
+	</select>
+	
+	<select id="getAllPlaylist" resultType="PlaylistCheckVO">
+		SELECT * 
+		FROM lms_playlistCheck order
+		by id desc
+	</select>
+
+</mapper>

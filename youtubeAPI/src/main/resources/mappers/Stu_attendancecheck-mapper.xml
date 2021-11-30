@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StuAttendanceCheck">
+	
+	
+	<select id="getStuAttendanceCheckList" parameterType="hashmap" resultType="AttendanceCheckVO">
+		select external
+		from lms_attendanceCheck join lms_attendance on lms_attendanceCheck.attendanceID = lms_attendance.id
+		where classID = #{classID} and lms_attendanceCheck.studentID = #{studentID}
+	</select>
+	
+	<select id="getAttendanceCheckListCount" resultType="int">
+		select count(distinct attendanceID) 
+		from lms_attendanceCheck join lms_attendance on lms_attendanceCheck.attendanceID = lms_attendance.id
+		where lms_attendance.classID = #{classID}
+	</select>
+
+</mapper>

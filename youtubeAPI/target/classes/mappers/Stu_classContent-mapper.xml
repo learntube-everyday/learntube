@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Stu_ClassContent">
+	
+	<select id="getDaySeq" resultType="int">
+		select count(*) from lms_classContent
+		where classID=#{classID} and days=#{days} AND published =1
+	</select>
+	
+	<select id="getOneContent" resultType="classContent">
+		select * from lms_classContent
+		where id=#{id}
+	</select>
+	
+	<select id="getPlaylistCount" resultType="int">
+		select count(distinct days) from lms_classContent
+		where classID=#{classID} AND published =1
+	</select>
+	
+	<select id="getWeekClassContent" resultType="classContent">
+		select * 
+		from lms_classContent left join lms_playlist on lms_classContent.playlistID = lms_playlist.id
+		where classID=#{classID} AND published =1 order by days, lms_classContent.regDate
+	</select>
+	
+	<select id="getSamePlaylistID" resultType="classContent">
+		SELECT * 
+		FROM lms_classContent
+		where playlistID = #{playlistID} AND id = #{id}
+	</select>
+	
+	<select id="getAllClassContent" resultType="classContent">
+		select * from lms_classContent
+		where classID=#{classID} AND published =1 order by days, regDate
+	</select>
+	
+	<select id="getCompleteClassContent" resultType="String">
+		select endDate from lms_classContent
+		where classID=#{classID} AND playlistID=#{playlistID} published =1 order by days, regDate
+	</select>
+
+</mapper>

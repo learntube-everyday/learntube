@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Notice">
+	<insert id="insertNotice" useGeneratedKeys="true" keyProperty="id">
+		insert into lms_notice (classID, title, content, pin)
+		values (#{classID}, #{title}, #{content}, #{pin})
+	</insert>
+	
+	<update id="updateNotice">
+		update lms_notice 
+		set title=#{title}, content=#{content}, pin=#{pin}
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteNotice">
+		delete from lms_notice where id=#{id}
+	</delete>
+	
+	<select id="getAllNotice" resultType="notice">
+		select id, title, content, pin, viewCount, regDate 
+		from lms_notice
+		where lms_notice.classID=#{classID} order by id desc
+	</select>
+	
+	<select id="getAllPin" resultType="notice">
+		select * from lms_notice
+		where lms_notice.classID=#{classID} and pin=1 order by id desc
+	</select>
+	
+	<select id="searchNotice" resultType="notice">
+		select * from lms_notice
+		where title LIKE CONCAT('%', #{keyword}, '%') AND classID = #{classID} order by id desc;
+	</select>
+	
+	<update id="setPin">
+		update lms_notice
+		set pin=1
+		where id=#{id}
+	</update>
+	
+	<update id="unsetPin">
+		update lms_notice
+		set pin=0
+		where id=#{id}
+	</update>
+	
+</mapper>

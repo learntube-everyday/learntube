@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias alias="playlist" type="com.mycom.myapp.commons.PlaylistVO" />
+		<typeAlias alias="video" type="com.mycom.myapp.commons.VideoVO" />
+		<typeAlias alias="classes" type="com.mycom.myapp.commons.ClassesVO" />
+		<typeAlias alias="classContent" type="com.mycom.myapp.commons.ClassContentVO" />
+		<typeAlias alias="notice" type="com.mycom.myapp.commons.NoticeVO" />
+		<typeAlias alias="calendar" type="com.mycom.myapp.commons.CalendarVO"/>
+		<typeAlias alias="attendance" type="com.mycom.myapp.commons.AttendanceVO" />
+		<typeAlias alias="attendanceInternal" type="com.mycom.myapp.commons.AttendanceInternalCheckVO" />
+		<typeAlias alias="member" type="com.mycom.myapp.commons.MemberVO"/>
+		
+		
+		<typeAlias alias="AttendanceCheckVO" type="com.mycom.myapp.commons.AttendanceCheckVO" />
+		<typeAlias alias="VideoCheckVO" type="com.mycom.myapp.student.videocheck.Stu_VideoCheckVO" />
+        <typeAlias alias="PlaylistCheckVO" type="com.mycom.myapp.student.playlistCheck.Stu_PlaylistCheckVO" />
+        <typeAlias alias="TakesVO" type="com.mycom.myapp.student.takes.Stu_TakesVO" />
+        
+	</typeAliases>
+	
+</configuration>

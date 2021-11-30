@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Playlist">
+	<insert id="addPlaylist">
+		insert into lms_playlist (playlistName, description, tag, instructorID, exposed, seq)
+		values (#{playlistName}, #{description}, #{tag}, #{instructorID}, #{exposed}, #{seq})
+	</insert>
+	
+	<update id="updatePlaylist">
+		update lms_playlist
+		set playlistName=#{playlistName}, description=#{description}, tag=#{tag}, exposed=#{exposed} 
+		where id=#{id}
+	</update>
+	
+	<update id="updateThumbnailID">
+		update lms_playlist 
+		set thumbnailID= (SELECT youtubeID FROM lms_video WHERE playlistID=#{playlistID} order by seq limit 1) 
+		where id=#{playlistID}
+	</update>
+	
+	<update id="setThumbnailID">
+		update lms_playlist 
+		set thumbnailID=#{thumbnailID}
+		where id=#{id}
+	</update>
+	
+	<delete id="deletePlaylist">
+		delete from lms_playlist where id=#{id}
+	</delete>
+	
+	<update id="changeSeq">
+		update lms_playlist
+		set seq=#{seq} where id=#{playlistID}
+	</update>
+	
+	<select id="getPlaylist" resultType="playlist"> <!-- playlist info 가져올때 사용 -->
+		select * from lms_playlist where id=#{playlistID}
+	</select>
+	
+	<select id="getAllPlaylist" resultType="playlist"> 
+		select * from lms_playlist 
+		where exposed=1
+		order by seq desc
+	</select>
+	
+	<select id="getAllMyPlaylist" resultType="playlist"> 
+		select * from lms_playlist 
+		where instructorID=#{instructorID}
+		order by playlistName
+	</select>
+	
+	<select id="getPlaylistCount" resultType="int">
+		select count(*) from lms_playlist
+	</select>
+	
+	<update id="updateCount"> <!-- totalVideo 업데이트 -->
+		update lms_playlist
+		set totalVideo = ( select count(*)
+			from lms_video
+			where playlistID=#{playlistID} )
+		where id=#{playlistID}
+	</update>
+	
+	<update id="updateTotalVideoLength">
+		update lms_playlist
+		set totalVideoLength = ( select sum(duration)
+				from lms_video
+				where playlistID=#{playlistID} )
+		where id=#{playlistID}
+	</update>
+	
+	<select id="getPlaylistForInstructor" resultType="playlist"> 
+		select * from lms_playlist join lms_video on lms_playlist.id = lms_video.playlistID
+		where lms_playlist.id=#{id}
+	</select>
+	
+	<select id="searchPlaylist" resultType="playlist">
+		select * from lms_playlist
+		where playlistName LIKE CONCAT('%', #{keyword}, '%') AND instructorID = #{instructorID};
+	</select> 
+	
+	<!-- <select id="searchPlaylist" resultType="playlist">
+		select DISTINCT A.* from lms_playlist A JOIN lms_video B ON
+		A.id = B.playlistID 
+		where instructorID= #{instructorID} AND A.playlistName like CONCAT('%', '#{keyword}', '%') 
+		OR A.tag like CONCAT('%', #{keyword}', '%')
+		OR B.title like CONCAT('%', '#{keyword}', '%');
+	</select> -->
+	
+	<!-- <select id="searchPlaylist" resultType="playlist"> 
+		select A.id from lms_playlist A
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="#{searchType}=='0' and #{keyword}!=null and #{keyword}!=''">
+				AND A.playlistName like CONCAT('%', #{keyword}, '%')
+				OR
+				tag like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType=='1' and keyword!=null and keyword!=''">
+				AND A.playlistName like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType=='2' and keyword!=null and keyword!=''">
+				JOIN lms_video B ON A.id = B.playlistID where B.title like CONCAT('%', #{keyword}, '%')
+			</if>
+		</trim>
+	</select> -->
+	
+	<!-- <select id="searchPlaylist2" resultType="playlist">
+		select * from lms_playlist where ;
+	</select> -->
+	
+</mapper>

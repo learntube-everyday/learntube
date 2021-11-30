@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Stu_Notice">
+	<select id="getAllNotice" resultType="notice">
+		select * from lms_notice left join (select * from lms_noticeCheck where studentID=#{studentID}) nc
+		on lms_notice.id = nc.noticeID 
+		where lms_notice.classID=#{classID} order by lms_notice.id desc
+	</select>
+	
+	<select id="getAllPin" resultType="notice">
+		select * from lms_notice left join (select * from lms_noticeCheck where studentID=#{studentID}) nc
+		on lms_notice.id = nc.noticeID 
+		where lms_notice.classID=#{classID} and pin=1 order by lms_notice.id desc
+	</select>
+	
+	<insert id="insertView">
+		insert into lms_noticeCheck (noticeID, studentID)
+		values (#{id}, #{studentID})
+	</insert>
+	
+	<update id="updateViewCount">
+		update lms_notice
+		set viewCount = ( select count(*)
+			from lms_noticeCheck
+			where noticeID=#{id} )
+		where id=#{id}
+	</update>
+	
+	<select id="getCountNotice" resultType="int">
+		select count(*)
+		from lms_notice
+		where classID=#{classID}
+	</select>
+	
+	<select id="getCountNoticeCheck" resultType="int">
+		select count(*)
+		from lms_noticeCheck join lms_notice on lms_noticeCheck.noticeID = lms_notice.id 
+		where studentID=#{studentID} and lms_notice.classID=#{id}
+	</select>
+	
+	<delete id="deleteNoticeCheck">
+		delete A from lms_noticeCheck A 
+		LEFT JOIN lms_notice B ON B.id = A.noticeID 
+		WHERE B.classID = #{classID} and A.studentID=#{studentID}
+	</delete>
+	
+	<select id="searchNotice" resultType="notice">
+		select * from lms_notice left join (select * from lms_noticeCheck where studentID=#{studentID}) nc
+		on lms_notice.id = nc.noticeID 
+		where title LIKE CONCAT('%', #{keyword}, '%') AND lms_notice.classID=#{classID} order by lms_notice.id desc
+	</select>
+	
+</mapper>
