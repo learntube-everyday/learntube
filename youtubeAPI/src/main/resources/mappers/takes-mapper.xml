@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Takes">
+
+	<insert id="insertTakes">
+		insert into lms_takes(studentID, className, classID, status)
+		values
+		(#{studentID}, #{className}, #{classID}, #{status})
+	</insert>
+	
+ 	<update id="updateTakes">
+		update lms_takes
+		set studentID=#{studentID}, className=#{className}, classID=#{classID}, pass=#{pass}
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteTakes">
+		delete from lms_takes where studentID=#{studentID} and classID=#{classID} 
+	</delete>
+	
+	<select id="getStudent" resultType="TakesVO">
+		select * from lms_takes
+		where studentID=#{studentId}
+	</select>
+	
+	<select id="getPendingClass" resultType="TakesVO">
+		select * from lms_takes
+		where studentID=#{studentId} and status="pending"
+	</select>
+	
+	<select id="getAcceptedStudent" resultType="TakesVO">
+		select * from lms_takes
+		where studentID=#{studentId} and status="accepted"
+	</select>
+	
+	<select id="getAcceptedStudentNum" resultType="int">
+		select count(*) from lms_takes
+		where studentID=#{studentId} and status="accepted"
+	</select>
+	
+	<select id="getTakesNum" resultType="int">
+		select count(*)
+		from lms_takes join lms_student on lms_takes.studentID = lms_student.id
+		where classID=#{classID} and status="accepted" order by name
+	</select>
+	
+	<select id="getStudentTakes" resultType="TakesVO">
+		select studentID, name, classID, email
+		from lms_takes join lms_student on lms_takes.studentID = lms_student.id
+		where classID=#{classID} and status="accepted" order by name
+	</select>
+	
+	<select id="getAllClassStudent" resultType="TakesVO">
+		select id, studentID from lms_takes
+		where classID=#{classID}
+	</select>
+	
+	<select id="checkIfAlreadyEnrolled" resultType="TakesVO">
+		select * from lms_takes
+		where classID=#{classID} and studentID=#{studentID}
+	</select>
+	
+	<select id="getStudentInfo" resultType="TakesVO">
+		<!-- select * from lms_takes as A inner join lms_student as B where
+		lms_takes.studentID = lms_student.id and classID = #{classID} -->
+		select A.studentID, A.status, A.regDate, A.modDate, B.name, B.email
+		from lms_takes A inner join lms_student B on
+		A.studentID = B.id and classID = #{classID} order by regDate
+	</select>
+	
+	<update id="updateStatus"> 
+		update lms_takes
+		set status=#{status}
+		where studentID=#{studentID} and classID=#{classID} 
+	</update>
+	
+</mapper> 
