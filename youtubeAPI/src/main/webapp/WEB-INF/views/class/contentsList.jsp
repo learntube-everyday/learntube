@@ -241,7 +241,7 @@ function search(event) {
 				percentage = '';
 			}
 			
-			if(howmanyTake == null){
+			if(howmanyTake == null || howmanyTake == ''){
 				percentage = '% 완료';
 			}
 			if (realAllContents[i].published == true && realAllContents[i].playlistID != 0)

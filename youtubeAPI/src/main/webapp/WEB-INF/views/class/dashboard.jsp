@@ -426,8 +426,8 @@ function submitAddClassroom(){
 			if(data == 'ok'){
 				location.reload();
 			}
-			else
-				alert('강의실 생성에 실패했습니다. 잠시후 다시 시도해주세요:(');
+			//else
+				//alert('강의실 생성에 실패했습니다. 잠시후 다시 시도해주세요:(');
 			
 		},
 		error: function(data, status,error){
